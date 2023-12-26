@@ -1,0 +1,43 @@
+<div class="grid">
+  <div class="col-12">
+    <div class="flex justify-content-center aligin-content-center text-aligin-center">
+      <form>
+        <p-card styleClass="mt-10" header="Login" subheader="Faça o login com sua conta existente!" *ngIf="loginCard">
+          <div class="flex justify-content-center aligin-content-center text-aligin-center">
+            <input type="email" pInputText placeholder="Email" />
+          </div>
+          <div class="flex justify-content-center aligin-content-center text-aligin-center mt-3">
+            <input type="password" pInputText placeholder="Senha" />
+          </div>
+          <div class="card flex justify-content-center mt-3">
+            <button type="submit" pButton pRipple label="Login"></button>
+          </div>
+          <span class="flex justify-content-center text-aligin-center mt-3 text-red-600 font-semibold"
+            (click)="loginCard = !loginCard" style="cursor: pointer;">
+            Criar conta
+          </span>
+        </p-card>
+      </form>
+      <form>
+        <p-card styleClass="mt-10" header="Criar Conta" subheader="Crie sua conta" *ngIf="!loginCard">
+          <div class="flex justify-content-center aligin-content-center text-aligin-center">
+            <input type="text" pInputText placeholder="Nome" />
+          </div>
+          <div class="flex justify-content-center aligin-content-center text-aligin-center mt-3">
+            <input type="email" pInputText placeholder="Email" />
+          </div>
+          <div class="flex justify-content-center aligin-content-center text-aligin-center mt-3">
+            <input type="password" pInputText placeholder="Senha" />
+          </div>
+          <div class="card flex justify-content-center mt-3">
+            <button type="submit" pButton pRipple label=" Criar conta"></button>
+          </div>
+          <span class="flex justify-content-center text-aligin-center mt-3 text-red-600 font-semibold"
+            (click)="loginCard = !loginCard" style="cursor: pointer;">
+            Fazer Login
+          </span>
+        </p-card>
+      </form>
+    </div>
+  </div>
+</div>
