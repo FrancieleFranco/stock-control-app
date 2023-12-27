@@ -11,7 +11,7 @@ import { enviroment } from 'src/enviroments/enviroments';
   providedIn: 'root',
 })
 export class UserService {
-  private API_URL = enviroment;
+  private API_URL = enviroment.API_URL;
 
   constructor(private http: HttpClient) {}
 
@@ -23,6 +23,6 @@ export class UserService {
   }
 
   authUser(requestDatas: AuthRequest): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.API_URL}/`, requestDatas);
+    return this.http.post<AuthResponse>(`${this.API_URL}/auth`, requestDatas);
   }
 }
