@@ -1,3 +1,4 @@
+import { MessageService } from 'primeng/api';
 import { AuthRequest } from './../../models/interfaces/user/auth/authRequst';
 import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
@@ -27,7 +28,8 @@ export class HomeComponent {
   constructor(
     private formBuilder: FormBuilder,
     private userService: UserService,
-    private cokieService: CookieService
+    private cokieService: CookieService,
+    private messageService: MessageService
   ) {}
 
   onSubmitLoginForm(): void {
@@ -38,9 +40,23 @@ export class HomeComponent {
           if (response) {
             this.cokieService.set('USER_INFO', response?.token);
             this.loginForm.reset();
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Sucesso',
+              detail: `Bem vindo de volta ${response?.name}!`,
+              life: 2000,
+            });
           }
         },
-        error: (err) => console.log(err),
+        error: (err) => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Erro',
+            detail: `Erro ao fazer login!`,
+            life: 2000,
+          });
+          console.log(err);
+        },
       });
     }
   }
@@ -52,12 +68,26 @@ export class HomeComponent {
         .subscribe({
           next: (response) => {
             if (response) {
-              alert('Usuário criado com sucesso');
               this.sigupForm.reset();
               this.loginCard = true;
+              this.loginForm.reset();
+              this.messageService.add({
+                severity: 'success',
+                summary: 'Sucesso',
+                detail: `Usuário criado com sucesso!`,
+                life: 2000,
+              });
             }
           },
-          error: (err) => console.log(err),
+          error: (err) => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Erro',
+              detail: `Erro ao fazer login!`,
+              life: 2000,
+            });
+            console.log(err);
+          },
         });
     }
     // console.log('Dados do formulário de criação', this.sigupForm.value);

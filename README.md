@@ -6,6 +6,8 @@ Com integração e consumo do back end feito em NodeJS.
 ## Tecnologias Utilizadas
 
 - Framework: Angular(versão utilizada 15)
-- Biblioteca: PrimeNG
+- Biblioteca:
+  - PrimeNG
+  - NGX Cookie Service(para trabalhar com cookies)
 
 ## Formulários Reativos
