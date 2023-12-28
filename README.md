@@ -9,5 +9,6 @@ Com integração e consumo do back end feito em NodeJS.
 - Biblioteca:
   - PrimeNG
   - NGX Cookie Service(para trabalhar com cookies)
+  - ChartJs
 
 ## Formulários Reativos

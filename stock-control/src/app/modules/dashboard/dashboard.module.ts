@@ -24,6 +24,7 @@ import { CookieService } from 'ngx-cookie-service';
     ToolbarModule,
     CardModule,
     ToastModule,
+    CardModule,
   ],
   providers: [MessageService, CookieService],
 })
