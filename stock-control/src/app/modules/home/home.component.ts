@@ -1,10 +1,10 @@
-import { MessageService } from 'primeng/api';
-import { AuthRequest } from './../../models/interfaces/user/auth/authRequst';
 import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { CookieService } from 'ngx-cookie-service';
 import { SignupUserRequest } from 'src/app/models/interfaces/user/SignupUserRequest';
+import { AuthRequest } from 'src/app/models/interfaces/user/auth/authRequst';
 import { UserService } from 'src/app/services/user/user.service';
+import { CookieService } from 'ngx-cookie-service';
+import { MessageService } from 'primeng/api';
 import { Router } from '@angular/router';
 
 @Component({
