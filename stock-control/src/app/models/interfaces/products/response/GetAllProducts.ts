@@ -1,4 +1,4 @@
-export interface GetAllProducts {
+export interface GetAllProductsResponse {
   id: string;
   name: string;
   price: string;

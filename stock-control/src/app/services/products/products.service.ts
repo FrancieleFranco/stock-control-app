@@ -1,4 +1,4 @@
-import { GetAllProducts } from './../../models/interfaces/products/response/GetAllProducts';
+import { GetAllProductsResponse } from './../../models/interfaces/products/response/GetAllProducts';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
@@ -21,9 +21,12 @@ export class ProductsService {
 
   constructor(private http: HttpClient, private cookie: CookieService) {}
 
-  getAllProducts(): Observable<Array<GetAllProducts>> {
+  getAllProducts(): Observable<Array<GetAllProductsResponse>> {
     return this.http
-      .get<Array<GetAllProducts>>(`${this.API_URL}/products`, this.httOptions)
+      .get<Array<GetAllProductsResponse>>(
+        `${this.API_URL}/products`,
+        this.httOptions
+      )
       .pipe(map((product) => product.filter((data) => data?.amount > 0)));
   }
 }
