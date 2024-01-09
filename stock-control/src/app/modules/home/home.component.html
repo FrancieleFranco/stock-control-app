@@ -2,6 +2,7 @@
   <div class="col-12">
     <div class="flex justify-content-center aligin-content-center text-aligin-center">
       <form [formGroup]="loginForm" (ngSubmit)="onSubmitLoginForm()">
+        <p-button styleclass="p-button-danger"></p-button>
         <p-card styleClass="mt-10" header="Login" subheader="Faça o login com sua conta existente!" *ngIf="loginCard">
           <div class="flex justify-content-center aligin-content-center text-aligin-center">
             <input type="email" pInputText placeholder="Email" formControlName="email" />
