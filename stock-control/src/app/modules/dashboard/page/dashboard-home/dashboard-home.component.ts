@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MessageService } from 'primeng/api';
+import { Subject, takeUntil } from 'rxjs';
 import { GetAllProductsResponse } from 'src/app/models/interfaces/products/response/GetAllProducts';
 import { ProductsService } from 'src/app/services/products/products.service';
 import { ProductsDataTransfereService } from 'src/app/shared/services/producuts/products-data-transfere.service';
@@ -9,8 +10,9 @@ import { ProductsDataTransfereService } from 'src/app/shared/services/producuts/
   templateUrl: './dashboard-home.component.html',
   styleUrls: [],
 })
-export class DashboardHomeComponent implements OnInit {
+export class DashboardHomeComponent implements OnInit, OnDestroy {
   public productsList: Array<GetAllProductsResponse> = [];
+  private destroy$ = new Subject<void>();
 
   constructor(
     private productService: ProductsService,
@@ -22,23 +24,30 @@ export class DashboardHomeComponent implements OnInit {
     this.getProductsData();
   }
   getProductsData(): void {
-    this.productService.getAllProducts().subscribe({
-      next: (response) => {
-        if (response.length > 0) {
-          this.productsList = response;
-          this.productData.setProductDatas(this.productsList);
-          console.log('dados', this.productsList);
-        }
-      },
-      error: (err) => {
-        console.log(err);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Erro',
-          detail: 'Erro ao buscar produtos',
-          life: 2500,
-        });
-      },
-    });
+    this.productService
+      .getAllProducts()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          if (response.length > 0) {
+            this.productsList = response;
+            this.productData.setProductDatas(this.productsList);
+            console.log('dados', this.productsList);
+          }
+        },
+        error: (err) => {
+          console.log(err);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Erro',
+            detail: 'Erro ao buscar produtos',
+            life: 2500,
+          });
+        },
+      });
+  }
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

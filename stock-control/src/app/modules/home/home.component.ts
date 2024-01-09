@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { SignupUserRequest } from 'src/app/models/interfaces/user/SignupUserRequest';
 import { AuthRequest } from 'src/app/models/interfaces/user/auth/authRequst';
@@ -6,13 +6,16 @@ import { UserService } from 'src/app/services/user/user.service';
 import { CookieService } from 'ngx-cookie-service';
 import { MessageService } from 'primeng/api';
 import { Router } from '@angular/router';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
 })
-export class HomeComponent {
+export class HomeComponent implements OnDestroy {
+  private destroy$ = new Subject<void>();
+
   loginCard = true;
 
   loginForm = this.formBuilder.group({
@@ -37,30 +40,33 @@ export class HomeComponent {
   onSubmitLoginForm(): void {
     //console.log('Dados do formulário de login', this.loginForm.value);
     if (this.loginForm.value && this.loginForm.valid) {
-      this.userService.authUser(this.loginForm.value as AuthRequest).subscribe({
-        next: (response) => {
-          if (response) {
-            this.cokieService.set('USER_INFO', response?.token);
-            this.loginForm.reset();
-            this.router.navigate(['/dashboard']);
+      this.userService
+        .authUser(this.loginForm.value as AuthRequest)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: (response) => {
+            if (response) {
+              this.cokieService.set('USER_INFO', response?.token);
+              this.loginForm.reset();
+              this.router.navigate(['/dashboard']);
+              this.messageService.add({
+                severity: 'success',
+                summary: 'Sucesso',
+                detail: `Bem vindo de volta ${response?.name}!`,
+                life: 2000,
+              });
+            }
+          },
+          error: (err) => {
             this.messageService.add({
-              severity: 'success',
-              summary: 'Sucesso',
-              detail: `Bem vindo de volta ${response?.name}!`,
+              severity: 'error',
+              summary: 'Erro',
+              detail: `Erro ao fazer login!`,
               life: 2000,
             });
-          }
-        },
-        error: (err) => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Erro',
-            detail: `Erro ao fazer login!`,
-            life: 2000,
-          });
-          console.log(err);
-        },
-      });
+            console.log(err);
+          },
+        });
     }
   }
 
@@ -68,6 +74,7 @@ export class HomeComponent {
     if (this.sigupForm.value && this.sigupForm.valid) {
       this.userService
         .signupUser(this.sigupForm.value as SignupUserRequest)
+        .pipe(takeUntil(this.destroy$))
         .subscribe({
           next: (response) => {
             if (response) {
@@ -93,6 +100,11 @@ export class HomeComponent {
           },
         });
     }
+
     // console.log('Dados do formulário de criação', this.sigupForm.value);
+  }
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }
