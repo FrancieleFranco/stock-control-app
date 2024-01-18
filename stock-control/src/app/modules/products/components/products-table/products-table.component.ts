@@ -1,4 +1,6 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { ProductEvent } from 'src/app/models/enums/products/PrdoductEvent';
+import { EventAction } from 'src/app/models/interfaces/event/eventAction';
 import { GetAllProductsResponse } from 'src/app/models/interfaces/products/response/GetAllProducts';
 
 @Component({
@@ -7,7 +9,18 @@ import { GetAllProductsResponse } from 'src/app/models/interfaces/products/respo
   styleUrls: [],
 })
 export class ProductsTableComponent {
-  public productsSelected!: GetAllProductsResponse;
-
   @Input() products: Array<GetAllProductsResponse> = [];
+  @Output() productEvent = new EventEmitter<EventAction>();
+
+  public productsSelected!: GetAllProductsResponse;
+  public addProductEvent = ProductEvent.ADD_PRODUCT_EVENT;
+  public editProductEvent = ProductEvent.EDIT_PRODUCT_EVENT;
+
+  handleProductEvent(action: string, id?: string): void {
+    if (action && action !== '') {
+      const productEventData = id && id !== '' ? { action, id } : { action };
+      //emitir valor do evento
+      this.productEvent.emit(productEventData);
+    }
+  }
 }

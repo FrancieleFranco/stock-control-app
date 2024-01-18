@@ -3,6 +3,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { Subject, takeUntil } from 'rxjs';
+import { EventAction } from 'src/app/models/interfaces/event/eventAction';
 import { GetAllProductsResponse } from 'src/app/models/interfaces/products/response/GetAllProducts';
 import { ProductsService } from 'src/app/services/products/products.service';
 
@@ -58,6 +59,13 @@ export class ProductsHomeComponent implements OnInit, OnDestroy {
         },
       });
   }
+
+  handleProductAction(event: EventAction): void {
+    if (event) {
+      console.log('evento recebido', event);
+    }
+  }
+
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
