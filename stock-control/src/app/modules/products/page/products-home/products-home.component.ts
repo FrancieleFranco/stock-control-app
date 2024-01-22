@@ -1,7 +1,9 @@
+import { ProductFormComponent } from './../../components/products-table/product-form/product-form.component';
 import { ProductsDataTransfereService } from './../../../../shared/services/producuts/products-data-transfere.service';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Subject, takeUntil } from 'rxjs';
 import { EventAction } from 'src/app/models/interfaces/event/eventAction';
 import { GetAllProductsResponse } from 'src/app/models/interfaces/products/response/GetAllProducts';
@@ -15,13 +17,15 @@ import { ProductsService } from 'src/app/services/products/products.service';
 export class ProductsHomeComponent implements OnInit, OnDestroy {
   private readonly destroy$ = new Subject<void>();
   public productsDatas: GetAllProductsResponse[] = [];
+  private ref!: DynamicDialogRef;
 
   constructor(
     private productsDataTransfereService: ProductsDataTransfereService,
     private productsService: ProductsService,
     private router: Router,
     private messageService: MessageService,
-    private confirmationService: ConfirmationService
+    private confirmationService: ConfirmationService,
+    private dialogService: DialogService
   ) {}
 
   ngOnInit(): void {
@@ -63,6 +67,20 @@ export class ProductsHomeComponent implements OnInit, OnDestroy {
 
   handleProductAction(event: EventAction): void {
     if (event) {
+      this.ref = this.dialogService.open(ProductFormComponent, {
+        header: event?.action,
+        width: '70%',
+        contentStyle: { overflow: 'auto' },
+        baseZIndex: 10000,
+        maximizable: true,
+        data: {
+          event: event,
+          productDatas: this.productsDatas,
+        },
+      });
+      this.ref.onClose.pipe(takeUntil(this.destroy$)).subscribe({
+        next: () => this.getAPIProductsDatas(),
+      });
       console.log('evento recebido', event);
     }
   }

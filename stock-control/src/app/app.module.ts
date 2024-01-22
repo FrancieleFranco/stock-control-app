@@ -13,6 +13,7 @@ import { AppComponent } from './app.component';
 import { HomeComponent } from './modules/home/home.component';
 import { CookieService } from 'ngx-cookie-service';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { DialogService } from 'primeng/dynamicdialog';
 
 @NgModule({
   declarations: [AppComponent, HomeComponent],
@@ -27,7 +28,12 @@ import { ConfirmationService, MessageService } from 'primeng/api';
     ButtonModule,
     ToastModule,
   ],
-  providers: [CookieService, MessageService, ConfirmationService],
+  providers: [
+    CookieService,
+    MessageService,
+    ConfirmationService,
+    DialogService,
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

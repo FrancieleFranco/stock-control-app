@@ -14,7 +14,7 @@ export class CategoriesService {
   private httpOptions = {
     headers: new HttpHeaders({
       'Content-Type': 'application/json',
-      Authorizations: `Bearer${this.JWT_TOKEN} `,
+      Authorization: `Bearer ${this.JWT_TOKEN}`,
     }),
   };
 
