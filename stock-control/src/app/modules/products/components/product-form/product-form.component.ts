@@ -29,6 +29,7 @@ export class ProductFormComponent implements OnInit, OnDestroy {
   };
   public productSelectedDatas!: GetAllProductsResponse;
   public productsDatas: GetAllProductsResponse[] = [];
+  public renderDropdow = false;
 
   public addProductForm = this.formBuilder.group({
     name: ['', Validators.required],
@@ -37,11 +38,13 @@ export class ProductFormComponent implements OnInit, OnDestroy {
     category_id: ['', Validators.required],
     amount: [0, Validators.required],
   });
+
   public editProductForm = this.formBuilder.group({
     name: ['', Validators.required],
     price: ['', Validators.required],
     description: ['', Validators.required],
     amount: [0, Validators.required],
+    category_id: ['', Validators.required],
   });
 
   public addProductAction = ProductEvent.ADD_PRODUCT_EVENT;
@@ -61,17 +64,11 @@ export class ProductFormComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.productAction = this.ref.data;
 
-    if (
-      this.productAction?.event?.action === this.editProductAction &&
-      this.productAction?.productDatas
-    ) {
-      this.getProductSelectedDatas(this.productAction?.event?.id as string);
-    }
-
     this.productAction?.event?.action === this.saleProductAction &&
       this.getProductDatas();
 
     this.getAllCategories();
+    this.renderDropdow = true;
   }
 
   getAllCategories(): void {
@@ -82,6 +79,15 @@ export class ProductFormComponent implements OnInit, OnDestroy {
         next: (response) => {
           if (response.length > 0) {
             this.categoriesDatas = response;
+
+            if (
+              this.productAction?.event?.action === this.editProductAction &&
+              this.productAction?.productDatas
+            ) {
+              this.getProductSelectedDatas(
+                this.productAction?.event?.id as string
+              );
+            }
           }
         },
       });
@@ -122,7 +128,7 @@ export class ProductFormComponent implements OnInit, OnDestroy {
           },
         });
     }
-
+    //limpa o campos do formulário
     this.addProductForm.reset();
   }
 
@@ -138,6 +144,7 @@ export class ProductFormComponent implements OnInit, OnDestroy {
         description: this.editProductForm.value.description as string,
         product_id: this.productAction?.event?.id,
         amount: this.editProductForm.value.amount as number,
+        category_id: this.editProductForm.value.category_id as string,
       };
 
       this.productsService
@@ -183,6 +190,7 @@ export class ProductFormComponent implements OnInit, OnDestroy {
           price: this.productSelectedDatas?.price,
           amount: this.productSelectedDatas?.amount,
           description: this.productSelectedDatas?.description,
+          category_id: this.productSelectedDatas?.category.id,
         });
       }
     }
@@ -197,6 +205,7 @@ export class ProductFormComponent implements OnInit, OnDestroy {
           if (response.length > 0) {
             this.productsDatas = response;
             this.productsDatas &&
+              //ataulizar o servico pasando productsDatas
               this.productsDtService.setProductDatas(this.productsDatas);
           }
         },

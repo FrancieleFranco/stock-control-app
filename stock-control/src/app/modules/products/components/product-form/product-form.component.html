@@ -18,6 +18,10 @@
   <form [formGroup]="editProductForm" (ngSubmit)="handleSubmitEditProduct()">
     <div class="card flex flex-column md:flex-column gap-3">
       <input pInputText placeholder="Nome" formControlName="name" />
+      <div *ngIf="renderDropdow">
+        <p-dropdown styleClass="w-full" [options]="categoriesDatas" formControlName="selectedCategory"
+          optionLabel="name" optionValue="id" formControlName="category_id"></p-dropdown>
+      </div>
       <input pInputText placeholder="Preço" formControlName="price" />
       <input pInputText placeholder="Descrição" formControlName="description" />
       <input pInputText type="number" placeholder="Quantidade" formControlName="amount" />

@@ -4,7 +4,7 @@ export interface GetAllProductsResponse {
   price: string;
   description: string;
   amount: number;
-  category_id: {
+  category: {
     id: string;
     name: string;
   };
