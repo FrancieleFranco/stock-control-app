@@ -12,6 +12,7 @@ import { GetAllProductsResponse } from 'src/app/models/interfaces/products/respo
 import { DynamicDialogConfig, DialogService } from 'primeng/dynamicdialog';
 import { EditProductRequest } from 'src/app/models/interfaces/products/request/EditProductRequest';
 import { ProductsDataTransfereService } from 'src/app/shared/services/producuts/products-data-transfere.service';
+import { ProductEvent } from 'src/app/models/enums/products/PrdoductEvent';
 
 @Component({
   selector: 'app-product-form',
@@ -20,11 +21,11 @@ import { ProductsDataTransfereService } from 'src/app/shared/services/producuts/
 })
 export class ProductFormComponent implements OnInit, OnDestroy {
   private readonly destroy$: Subject<void> = new Subject();
-  public categoriesDatas: GetCategoriesResponse[] = [];
+  public categoriesDatas: Array<GetCategoriesResponse> = [];
   public selectedCategory: Array<{ name: string; code: string }> = [];
   public productAction!: {
     event: EventAction;
-    productsDatas: Array<GetAllProductsResponse>;
+    productDatas: Array<GetAllProductsResponse>;
   };
   public productSelectedDatas!: GetAllProductsResponse;
   public productsDatas: GetAllProductsResponse[] = [];
@@ -34,9 +35,8 @@ export class ProductFormComponent implements OnInit, OnDestroy {
     price: ['', Validators.required],
     description: ['', Validators.required],
     category_id: ['', Validators.required],
-    aumount: [0, Validators.required],
+    amount: [0, Validators.required],
   });
-
   public editProductForm = this.formBuilder.group({
     name: ['', Validators.required],
     price: ['', Validators.required],
@@ -44,25 +44,38 @@ export class ProductFormComponent implements OnInit, OnDestroy {
     amount: [0, Validators.required],
   });
 
+  public addProductAction = ProductEvent.ADD_PRODUCT_EVENT;
+  public editProductAction = ProductEvent.EDIT_PRODUCT_EVENT;
+  public saleProductAction = ProductEvent.SALE_PRODUCT_EVENT;
+
   constructor(
-    private categorieService: CategoriesService,
+    private categoriesService: CategoriesService,
+    private productsService: ProductsService,
+    private productsDtService: ProductsDataTransfereService,
     private formBuilder: FormBuilder,
     private messageService: MessageService,
     private router: Router,
-    private productService: ProductsService,
-    private ref: DynamicDialogConfig,
-    private dialogService: DialogService,
-    private productsDataTransfereService: ProductsDataTransfereService
+    public ref: DynamicDialogConfig
   ) {}
 
   ngOnInit(): void {
-    this.getAAlCategories();
-    console.log(this.categoriesDatas);
     this.productAction = this.ref.data;
+
+    if (
+      this.productAction?.event?.action === this.editProductAction &&
+      this.productAction?.productDatas
+    ) {
+      this.getProductSelectedDatas(this.productAction?.event?.id as string);
+    }
+
+    this.productAction?.event?.action === this.saleProductAction &&
+      this.getProductDatas();
+
+    this.getAllCategories();
   }
 
-  getAAlCategories() {
-    this.categorieService
+  getAllCategories(): void {
+    this.categoriesService
       .getAllCategories()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
@@ -74,16 +87,17 @@ export class ProductFormComponent implements OnInit, OnDestroy {
       });
   }
 
-  handleSubmitAddProduct() {
+  handleSubmitAddProduct(): void {
     if (this.addProductForm?.value && this.addProductForm?.valid) {
       const requestCreateProduct: CreateProductRequest = {
         name: this.addProductForm.value.name as string,
         price: this.addProductForm.value.price as string,
         description: this.addProductForm.value.description as string,
-        amount: Number(this.addProductForm.value.aumount),
         category_id: this.addProductForm.value.category_id as string,
+        amount: Number(this.addProductForm.value.amount),
       };
-      this.productService
+
+      this.productsService
         .createProduct(requestCreateProduct)
         .pipe(takeUntil(this.destroy$))
         .subscribe({
@@ -92,7 +106,7 @@ export class ProductFormComponent implements OnInit, OnDestroy {
               this.messageService.add({
                 severity: 'success',
                 summary: 'Sucesso',
-                detail: 'Produto incluído com sucesso!',
+                detail: 'Produto criado com sucesso!',
                 life: 2500,
               });
             }
@@ -102,30 +116,68 @@ export class ProductFormComponent implements OnInit, OnDestroy {
             this.messageService.add({
               severity: 'error',
               summary: 'Erro',
-              detail: 'Erro ao incluir produto!',
+              detail: 'Erro ao criar produto!',
               life: 2500,
             });
           },
         });
-      //limpa o campos do formulário
     }
+
     this.addProductForm.reset();
   }
 
-  handleSubmitEditProduct() {
-    //if (this.editProductForm?.value && this.editProductForm?.valid) {
+  handleSubmitEditProduct(): void {
+    if (
+      this.editProductForm.value &&
+      this.editProductForm.valid &&
+      this.productAction.event.id
+    ) {
+      const requestEditProduct: EditProductRequest = {
+        name: this.editProductForm.value.name as string,
+        price: this.editProductForm.value.price as string,
+        description: this.editProductForm.value.description as string,
+        product_id: this.productAction?.event?.id,
+        amount: this.editProductForm.value.amount as number,
+      };
+
+      this.productsService
+        .editProduct(requestEditProduct)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: () => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Sucesso',
+              detail: 'Produto editado com sucesso!',
+              life: 2500,
+            });
+            this.editProductForm.reset();
+          },
+          error: (err) => {
+            console.log(err);
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Erro',
+              detail: 'Erro ao editar produto!',
+              life: 2500,
+            });
+            this.editProductForm.reset();
+          },
+        });
+    }
   }
 
-  getProductSelectDatas(product_id: string): void {
-    const allProducts = this.productAction?.productsDatas;
+  getProductSelectedDatas(productId: string): void {
+    const allProducts = this.productAction?.productDatas;
 
     if (allProducts.length > 0) {
       const productFiltered = allProducts.filter(
-        (element) => element?.id === product_id
+        (element) => element?.id === productId
       );
 
       if (productFiltered) {
         this.productSelectedDatas = productFiltered[0];
+
         this.editProductForm.setValue({
           name: this.productSelectedDatas?.name,
           price: this.productSelectedDatas?.price,
@@ -137,7 +189,7 @@ export class ProductFormComponent implements OnInit, OnDestroy {
   }
 
   getProductDatas(): void {
-    this.productService
+    this.productsService
       .getAllProducts()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
@@ -145,10 +197,7 @@ export class ProductFormComponent implements OnInit, OnDestroy {
           if (response.length > 0) {
             this.productsDatas = response;
             this.productsDatas &&
-              //ataulizar o servico pasando productsDatas
-              this.productsDataTransfereService.setProductDatas(
-                this.productsDatas
-              );
+              this.productsDtService.setProductDatas(this.productsDatas);
           }
         },
       });

@@ -1,14 +1,29 @@
-<div>
+<div *ngIf="productAction?.event?.action === addProductAction">
   <form [formGroup]="addProductForm" (ngSubmit)="handleSubmitAddProduct()">
     <div class="card flex flex-column md: flex-column gap-3 ">
       <input pInputText placeholder="Nome" formControlName="name">
-      <p-dropdown styleClass="w-full" [options]="categoriesDatas" [(ngModel)]="selectedCategory" optionLabel="name"
+      <p-dropdown styleClass="w-full" [options]="categoriesDatas" formControlName="selectedCategory" optionLabel="name"
         optionValue="id" placeholder="Selecione uma categoria" formControlName="category_id"></p-dropdown>
       <input pInputText placeholder="Preço" formControlName="price">
       <input pInputText placeholder="Descrição" formControlName="description">
-      <input pInputText placeholder="Quantidade" formControlName="aumount">
+      <input pInputText placeholder="Quantidade" formControlName="amount">
       <div class="flex flex-row justify-content-center align-content-center aligin-items-center m-1">
         <p-button [disabled]="!addProductForm.valid" type="submit" label="Concluir"></p-button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div *ngIf="productAction?.event?.action === editProductAction">
+  <form [formGroup]="editProductForm" (ngSubmit)="handleSubmitEditProduct()">
+    <div class="card flex flex-column md:flex-column gap-3">
+      <input pInputText placeholder="Nome" formControlName="name" />
+      <input pInputText placeholder="Preço" formControlName="price" />
+      <input pInputText placeholder="Descrição" formControlName="description" />
+      <input pInputText type="number" placeholder="Quantidade" formControlName="amount" />
+
+      <div class="flex flex-row justify-content-center align-content-center align-items-center">
+        <p-button [disabled]="!editProductForm.valid" type="submit" label="Concluir"></p-button>
       </div>
     </div>
   </form>
