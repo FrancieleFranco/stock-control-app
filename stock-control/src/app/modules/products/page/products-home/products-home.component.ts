@@ -1,4 +1,4 @@
-import { ProductFormComponent } from './../../components/products-table/product-form/product-form.component';
+import { ProductFormComponent } from '../../components/product-form/product-form.component';
 import { ProductsDataTransfereService } from './../../../../shared/services/producuts/products-data-transfere.service';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
