@@ -6,7 +6,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Subject, takeUntil } from 'rxjs';
 import { EventAction } from 'src/app/models/interfaces/event/eventAction';
-import { GetAllProductsResponse } from 'src/app/models/interfaces/products/response/GetAllProducts';
+import { GetAllProductsResponse } from 'src/app/models/interfaces/products/response/GetAllProductsResponse';
 import { ProductsService } from 'src/app/services/products/products.service';
 
 @Component({

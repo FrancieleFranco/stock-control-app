@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ProductEvent } from 'src/app/models/enums/products/PrdoductEvent';
 import { DeleteProductAction } from 'src/app/models/interfaces/event/DeleteteProductAction';
 import { EventAction } from 'src/app/models/interfaces/event/eventAction';
-import { GetAllProductsResponse } from 'src/app/models/interfaces/products/response/GetAllProducts';
+import { GetAllProductsResponse } from 'src/app/models/interfaces/products/response/GetAllProductsResponse';
 
 @Component({
   selector: 'app-products-table',
