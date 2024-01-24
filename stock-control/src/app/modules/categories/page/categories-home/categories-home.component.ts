@@ -71,6 +71,7 @@ export class CategoriesHomeComponent implements OnInit {
         .pipe(takeUntil(this.destroy$))
         .subscribe({
           next: (response) => {
+            this.getAllCategories();
             this.messageService.add({
               severity: 'sucess',
               summary: 'Sucesso',
@@ -81,6 +82,7 @@ export class CategoriesHomeComponent implements OnInit {
           },
           error: (err) => {
             console.log(err);
+            this.getAllCategories();
             this.messageService.add({
               severity: 'error',
               summary: 'Erro',
