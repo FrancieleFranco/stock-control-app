@@ -39,7 +39,7 @@ export class ProductsHomeComponent implements OnInit, OnDestroy {
     } else {
       this.getAPIProductsDatas();
     }
-    console.log('Dados de produtos....', this.productsDatas);
+    //console.log('Dados de produtos....', this.productsDatas);
   }
   getAPIProductsDatas() {
     this.productsService
