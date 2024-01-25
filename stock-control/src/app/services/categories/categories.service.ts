@@ -35,4 +35,14 @@ export class CategoriesService {
       },
     });
   }
+
+  createCategory(requestDatas: {
+    name: string;
+  }): Observable<GetCategoriesResponse[]> {
+    return this.http.post<GetCategoriesResponse[]>(
+      `${this.API_URL}/category`,
+      requestDatas,
+      this.httpOptions
+    );
+  }
 }

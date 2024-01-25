@@ -89,9 +89,9 @@ export class CategoriesHomeComponent implements OnInit {
               detail: 'Erro ao remover categoria!',
               life: 2500,
             });
-            this.getAllCategories();
           },
         });
+      this.getAllCategories();
     }
   }
 
