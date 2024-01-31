@@ -8,6 +8,8 @@ import { EditProductRequest } from 'src/app/models/interfaces/products/request/E
 import { CreateProductResponse } from 'src/app/models/interfaces/products/response/CreateProductResponse';
 import { DeleteProductResponse } from 'src/app/models/interfaces/products/response/DeleteProductResponse';
 import { enviroment } from 'src/enviroments/enviroments';
+import { SaleProductRequest } from 'src/app/models/interfaces/products/request/SaleProductRequest';
+import { SaleProductResponse } from 'src/app/models/interfaces/products/response/SaleProductRequest';
 
 @Injectable({
   providedIn: 'root',
@@ -60,6 +62,23 @@ export class ProductsService {
       `${this.API_URL}/product/edit`,
       requestDatas,
       this.httOptions
+    );
+  }
+
+  saleProduct(
+    requestDatas: SaleProductRequest
+  ): Observable<SaleProductResponse> {
+    return this.http.put<SaleProductResponse>(
+      `${this.API_URL}/product/sale`,
+      {
+        amount: requestDatas?.amount,
+      },
+      {
+        ...this.httOptions,
+        params: {
+          product_id: requestDatas?.product_id,
+        },
+      }
     );
   }
 }
